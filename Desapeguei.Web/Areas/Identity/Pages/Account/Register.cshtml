@@ -1,0 +1,194 @@
+﻿@page
+@model RegisterModel
+
+@{
+    ViewData["Title"] = "Criar Conta";
+}
+
+<link rel="stylesheet"
+      href="~/css/register.css"
+      asp-append-version="true" />
+
+<div class="register-page">
+
+    <div class="container">
+
+        <div class="row justify-content-center align-items-center min-vh-100">
+
+            <div class="col-lg-5 col-md-8">
+
+                <div class="register-card shadow-lg">
+
+                    <!-- TITULO -->
+                    <div class="text-center mb-4">
+
+                        <h1 class="register-title">
+                            DESAPEGUEI
+                        </h1>
+
+                        <p class="register-subtitle">
+                            Crie sua conta
+                        </p>
+
+                    </div>
+
+                    <!-- FORM -->
+                    <form id="registerForm"
+                          asp-route-returnUrl="@Model.ReturnUrl"
+                          method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3"
+                             role="alert">
+                        </div>
+
+                        <!-- NOME -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Nome"
+                                   class="form-label">
+                                Nome
+                            </label>
+
+                            <input asp-for="Input.Nome"
+                                   class="form-control custom-input"
+                                   placeholder="Digite seu nome" />
+
+                            <span asp-validation-for="Input.Nome"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- TELEFONE -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Telefone"
+                                   class="form-label">
+                                Telefone
+                            </label>
+
+                            <input asp-for="Input.Telefone"
+                                   class="form-control custom-input"
+                                   placeholder="Digite seu telefone" />
+
+                            <span asp-validation-for="Input.Telefone"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- ENDEREÇO -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Endereco"
+                                   class="form-label">
+                                Endereço
+                            </label>
+
+                            <input asp-for="Input.Endereco"
+                                   class="form-control custom-input"
+                                   placeholder="Digite seu endereço" />
+
+                            <span asp-validation-for="Input.Endereco"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Email"
+                                   class="form-label">
+                                Email
+                            </label>
+
+                            <input asp-for="Input.Email"
+                                   class="form-control custom-input"
+                                   autocomplete="username"
+                                   placeholder="Digite seu email" />
+
+                            <span asp-validation-for="Input.Email"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- SENHA -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Password"
+                                   class="form-label">
+                                Senha
+                            </label>
+
+                            <input asp-for="Input.Password"
+                                   class="form-control custom-input"
+                                   autocomplete="new-password"
+                                   placeholder="Digite sua senha" />
+
+                            <span asp-validation-for="Input.Password"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- CONFIRMAR SENHA -->
+                        <div class="mb-4">
+
+                            <label asp-for="Input.ConfirmPassword"
+                                   class="form-label">
+                                Confirmar Senha
+                            </label>
+
+                            <input asp-for="Input.ConfirmPassword"
+                                   class="form-control custom-input"
+                                   autocomplete="new-password"
+                                   placeholder="Confirme sua senha" />
+
+                            <span asp-validation-for="Input.ConfirmPassword"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- BOTAO -->
+                        <button id="registerSubmit"
+                                type="submit"
+                                class="btn btn-register w-100">
+
+                            Criar Conta
+
+                        </button>
+
+                        <!-- LINKS -->
+                        <div class="register-links mt-4 text-center">
+
+                            <p>
+
+                                <a asp-page="./Login">
+
+                                    Já possui conta? Entrar
+
+                                </a>
+
+                            </p>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

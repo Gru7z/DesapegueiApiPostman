@@ -1,0 +1,37 @@
+## Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+
+## Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ll]og/
+[Ll]ogs/
+
+## .NET
+*.pdb
+*.cache
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Rider / JetBrains
+.idea/
+
+## macOS
+.DS_Store
+
+## NuGet
+*.nupkg
+**/packages/*
+!**/packages/build/
+
+## Publicação
+publish/
+PublishProfiles/

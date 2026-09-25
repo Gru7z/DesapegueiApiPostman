@@ -1,0 +1,82 @@
+﻿@page
+@model Desapeguei.Web.Areas.Identity.Pages.Account.Manage.SenhaModel
+
+@{
+    ViewData["Title"] = "Senha";
+}
+
+<div class="senha-container">
+
+    <div class="senha-topo">
+        <h1>Minha conta</h1>
+        <p>Altere as configurações da sua conta</p>
+    </div>
+
+    <div class="senha-conteudo">
+
+        <div class="perfil-menu">
+
+            <a asp-page="./Index" class="perfil-menu-link">
+                Perfil
+            </a>
+
+            <a asp-page="./Email" class="perfil-menu-link">
+                E-mail
+            </a>
+
+            <a asp-page="./Senha" class="perfil-menu-link ativo">
+                Senha
+            </a>
+
+            <a asp-page="./DadosPessoais" class="perfil-menu-link">
+                Dados pessoais
+            </a>
+
+        </div>
+
+        <div class="senha-card">
+
+            <h2>Alterar senha</h2>
+
+            <p>Altere a senha da sua conta.</p>
+
+            <form method="post">
+
+                <div class="senha-item">
+
+                    <label>Senha atual</label>
+
+                    <input type="password"
+                           class="senha-input" />
+
+                </div>
+
+                <div class="senha-item">
+
+                    <label>Nova senha</label>
+
+                    <input type="password"
+                           class="senha-input" />
+
+                </div>
+
+                <div class="senha-item">
+
+                    <label>Confirmar nova senha</label>
+
+                    <input type="password"
+                           class="senha-input" />
+
+                </div>
+
+                <button type="submit" class="btn-senha">
+                    Salvar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

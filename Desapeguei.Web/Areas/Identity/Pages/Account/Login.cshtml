@@ -1,0 +1,129 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Entrar";
+}
+
+<link rel="stylesheet"
+      href="~/css/login.css"
+      asp-append-version="true" />
+
+<div class="login-page">
+
+    <div class="container">
+
+        <div class="row justify-content-center align-items-center min-vh-100">
+
+            <div class="col-lg-5 col-md-8">
+
+                <div class="login-card shadow-lg">
+
+                    <!-- TITULO -->
+                    <div class="text-center mb-4">
+
+                        <h1 class="login-title">
+                            DESAPEGUEI
+                        </h1>
+
+                        <p class="login-subtitle">
+                            Entre na sua conta
+                        </p>
+
+                    </div>
+
+                    <!-- FORM -->
+                    <form id="account" method="post">
+
+                        <div asp-validation-summary="ModelOnly"
+                             class="text-danger mb-3"
+                             role="alert">
+                        </div>
+
+                        <!-- EMAIL -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Email"
+                                   class="form-label">
+                                Email
+                            </label>
+
+                            <input asp-for="Input.Email"
+                                   class="form-control custom-input"
+                                   autocomplete="username"
+                                   placeholder="Digite seu email" />
+
+                            <span asp-validation-for="Input.Email"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- SENHA -->
+                        <div class="mb-3">
+
+                            <label asp-for="Input.Password"
+                                   class="form-label">
+                                Senha
+                            </label>
+
+                            <input asp-for="Input.Password"
+                                   class="form-control custom-input"
+                                   autocomplete="current-password"
+                                   placeholder="Digite sua senha" />
+
+                            <span asp-validation-for="Input.Password"
+                                  class="text-danger">
+                            </span>
+
+                        </div>
+
+                        <!-- CHECKBOX -->
+                        <div class="form-check mb-4">
+
+                            <input class="form-check-input"
+                                   asp-for="Input.RememberMe" />
+
+                            <label class="form-check-label"
+                                   asp-for="Input.RememberMe">
+
+                                Lembrar de mim
+
+                            </label>
+
+                        </div>
+
+                        <!-- BOTAO -->
+                        <button id="login-submit"
+                                type="submit"
+                                class="btn btn-login w-100">
+
+                            Entrar
+
+                        </button>
+
+                        <!-- LINKS -->
+                        <div class="login-links mt-4 text-center">
+
+                            <a href="/Identity/Account/Register"
+                               style="color: white !important; font-size: 15px;">
+                                CRIAR CONTA TESTE
+                            </a>
+                              
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

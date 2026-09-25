@@ -1,0 +1,153 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Carrinho";
+}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@ViewData["Title"]</title>
+
+    <link rel="stylesheet" href="~/css/carrinho.css" />
+</head>
+
+<body>
+
+    <div class="carrinho-container">
+
+        <h2 class="titulo-carrinho">Meu Carrinho</h2>
+
+        <div id="listaCarrinho">
+
+            <div class="produto-carrinho">
+
+                <img src="~/img/produto1.jpg"
+                     class="imagem-produto"
+                     alt="Produto">
+
+                <div class="info-produto">
+
+                    <h4>Pulseira</h4>
+
+                    <p class="categoria-produto">
+                        Acessórios
+                    </p>
+
+                    <p class="preco-produto">
+                        R$ 18,90
+                    </p>
+
+                    <div class="quantidade">
+
+                        <button type="button"
+                                class="btn-quantidade"
+                                onclick="alterarQuantidade(this, -1)">
+                            −
+                        </button>
+
+                        <span class="quantidade-valor">1</span>
+
+                        <button type="button"
+                                class="btn-quantidade"
+                                onclick="alterarQuantidade(this, 1)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button type="button"
+                        class="btn-remover"
+                        onclick="removerProduto(this)">
+                    🗑
+                </button>
+
+            </div>
+
+            <div class="produto-carrinho">
+
+                <img src="~/img/produto2.jpg"
+                     class="imagem-produto"
+                     alt="Produto">
+
+                <div class="info-produto">
+
+                    <h4>Tênis Adidas</h4>
+
+                    <p class="categoria-produto">
+                        Calçados
+                    </p>
+
+                    <p class="preco-produto">
+                        R$ 120,00
+                    </p>
+
+                    <div class="quantidade">
+
+                        <button type="button"
+                                class="btn-quantidade"
+                                onclick="alterarQuantidade(this, -1)">
+                            −
+                        </button>
+
+                        <span class="quantidade-valor">1</span>
+
+                        <button type="button"
+                                class="btn-quantidade"
+                                onclick="alterarQuantidade(this, 1)">
+                            +
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button type="button"
+                        class="btn-remover"
+                        onclick="removerProduto(this)">
+                    🗑
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="resumo-carrinho">
+
+            <h3>Resumo da compra</h3>
+
+            <div class="linha-resumo">
+                <span>Subtotal</span>
+                <strong id="subtotal">R$ 138,90</strong>
+            </div>
+
+            <div class="linha-resumo">
+                <span>Frete</span>
+                <strong>Grátis</strong>
+            </div>
+
+            <hr>
+
+            <div class="linha-total">
+                <span>Total</span>
+                <strong id="total">R$ 138,90</strong>
+            </div>
+
+            <button type="button"
+                    class="btn-finalizar"
+                    onclick="irParaPagamento()">
+                Continuar para pagamento
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="~/js/carrinho.js"></script>
+
+</body>
+</html>

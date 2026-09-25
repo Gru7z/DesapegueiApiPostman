@@ -1,0 +1,89 @@
+﻿/* ================= PAGINA ================= */
+
+.register-page {
+    min-height: 100vh;
+    background: #b6845f;
+}
+
+/* ================= CARD ================= */
+
+.register-card {
+    background: #a85f2d;
+    border-radius: 20px;
+    padding: 40px;
+}
+
+/* ================= TITULOS ================= */
+
+.register-title {
+    color: white;
+    font-size: 3rem;
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.4);
+    margin-bottom: 10px;
+}
+
+.register-subtitle {
+    color: #f3d4bc;
+    font-size: 1.1rem;
+}
+
+/* ================= INPUTS ================= */
+
+.custom-input {
+    height: 50px;
+    border-radius: 12px;
+    border: none;
+}
+
+    .custom-input:focus {
+        box-shadow: 0 0 0 0.2rem rgba(255,255,255,0.2);
+    }
+
+/* ================= BOTAO ================= */
+
+.btn-register {
+    background: #d3a07b;
+    color: white;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border: none;
+    transition: 0.3s;
+}
+
+    .btn-register:hover {
+        background: #6f472f;
+        color: white;
+    }
+
+/* ================= LINKS ================= */
+
+.register-links a {
+    color: white;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+    .register-links a:hover {
+        color: #ffe16b;
+    }
+
+/* ================= LABELS ================= */
+
+.form-label {
+    color: white;
+}
+
+/* ================= RESPONSIVO ================= */
+
+@media (max-width: 768px) {
+
+    .register-card {
+        padding: 25px;
+    }
+
+    .register-title {
+        font-size: 2.2rem;
+    }
+}

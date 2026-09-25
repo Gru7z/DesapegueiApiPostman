@@ -1,0 +1,83 @@
+﻿@page
+@model Desapeguei.Web.Areas.Identity.Pages.Account.Manage.DadosPessoaisModel
+
+@{
+    ViewData["Title"] = "Dados pessoais";
+}
+
+<div class="dados-container">
+
+    <div class="dados-topo">
+        <h1>Minha conta</h1>
+        <p>Altere as configurações da sua conta</p>
+    </div>
+
+    <div class="dados-conteudo">
+
+        <div class="perfil-menu">
+
+            <a asp-page="./Index" class="perfil-menu-link">
+                Perfil
+            </a>
+
+            <a asp-page="./Email" class="perfil-menu-link">
+                E-mail
+            </a>
+
+            <a asp-page="./Senha" class="perfil-menu-link">
+                Senha
+            </a>
+
+            <a asp-page="./DadosPessoais" class="perfil-menu-link ativo">
+                Dados pessoais
+            </a>
+
+        </div>
+
+        <div class="dados-lista">
+
+            <div class="dados-item">
+
+                <label>Nome</label>
+
+                <div class="dados-valor">
+                    @Model.Nome
+                </div>
+
+            </div>
+
+            <div class="dados-item">
+
+                <label>E-mail</label>
+
+                <div class="dados-valor">
+                    @Model.Email
+                </div>
+
+            </div>
+
+            <div class="dados-item">
+
+                <label>Telefone</label>
+
+                <div class="dados-valor">
+                    @Model.Telefone
+                </div>
+
+            </div>
+
+            <div class="dados-item">
+
+                <label>Endereço</label>
+
+                <div class="dados-valor">
+                    @Model.Endereco
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

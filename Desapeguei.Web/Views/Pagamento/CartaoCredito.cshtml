@@ -1,0 +1,35 @@
+@{
+    ViewData["Title"] = "Cartão de Crédito";
+}
+
+<div class="painel-cartao">
+
+    <h4>Informações de pagamento</h4>
+
+    <label>Número do cartão</label>
+    <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" id="numeroCartao">
+
+    <div class="row">
+        <div class="col-7">
+            <label>Validade</label>
+            <input type="text" class="form-control" placeholder="MM/AA" maxlength="5" id="validadeCartao">
+        </div>
+        <div class="col-5">
+            <label>Código de segurança</label>
+            <input type="text" class="form-control" placeholder="CVV" maxlength="4" id="cvvCartao">
+        </div>
+    </div>
+
+    <label>Nome no cartão</label>
+    <input type="text" class="form-control" placeholder="Nome impresso no cartão" id="nomeCartao">
+
+    <div class="acoes-cartao">
+        <a asp-controller="Pagamento" asp-action="Index" class="btn btn-cancelar-cartao text-center">Cancelar</a>
+        <button type="button" id="btnConfirmarCartao" class="btn-confirmar-cartao">Confirmar pagamento</button>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/pagamento.js" asp-append-version="true"></script>
+}

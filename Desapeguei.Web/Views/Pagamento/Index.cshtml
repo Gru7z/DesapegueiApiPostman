@@ -1,0 +1,41 @@
+@{
+    ViewData["Title"] = "Pagamento";
+}
+
+<div class="painel-pagamento">
+
+    <h4>Forma de Pagamento</h4>
+
+    <label class="opcao-pagamento" data-valor="pix">
+        <input type="radio" name="formaPagamento" value="pix" class="form-check-input" checked>
+        <div class="opcao-pagamento-texto">
+            <strong>PIX</strong>
+            <small>Confirmação imediata e sem taxas. Você receberá o QR Code na próxima tela.</small>
+        </div>
+    </label>
+
+    <label class="opcao-pagamento" data-valor="cartao">
+        <input type="radio" name="formaPagamento" value="cartao" class="form-check-input">
+        <div class="opcao-pagamento-texto">
+            <strong>CARTÃO</strong>
+            <small>Pague com cartão de crédito em até 12x.</small>
+        </div>
+    </label>
+
+    <label class="opcao-pagamento" data-valor="boleto">
+        <input type="radio" name="formaPagamento" value="boleto" class="form-check-input">
+        <div class="opcao-pagamento-texto">
+            <strong>BOLETO</strong>
+            <small>Vencimento em 3 dias úteis após a emissão do boleto.</small>
+        </div>
+    </label>
+
+    <button type="button" id="btnConfirmarPagamento" class="btn-confirmar-pagamento">
+        Confirmar
+    </button>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/pagamento.js" asp-append-version="true"></script>
+}

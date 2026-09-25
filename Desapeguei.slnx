@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Desapeguei.Web/Desapeguei.Web.csproj" />
+  <Project Path="Desapeguei.Api/Desapeguei.Api.csproj" />
+</Solution>

@@ -1,0 +1,99 @@
+@model List<Desapeguei.Web.Models.Produto>
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Painel Admin";
+    var busca = ViewData["Busca"]?.ToString() ?? "";
+    var total = ViewData["TotalProdutos"];
+    var apiBaseUrl = (Configuration["ApiBaseUrl"] ?? "").TrimEnd('/');
+
+    string ImagemDoProduto(string? imagemUrl)
+        => string.IsNullOrEmpty(imagemUrl) ? "/img/produto1.jpg" : $"{apiBaseUrl}{imagemUrl}";
+}
+
+<div class="admin-container">
+    <div class="admin-topo">
+        <div>
+            <h2 class="admin-titulo">Produtos cadastrados</h2>
+            <span class="admin-subtitulo">@total produto(s) no total</span>
+        </div>
+
+        <form method="get" asp-controller="Admin" asp-action="Index" class="admin-busca">
+            <input type="text" name="busca" value="@busca" class="form-control" placeholder="Buscar por título, categoria ou e-mail...">
+            <button type="submit" class="btn-admin-buscar">Buscar</button>
+        </form>
+    </div>
+
+    @if (TempData["MensagemAdmin"] != null)
+    {
+        <div class="alert alert-success admin-alerta">@TempData["MensagemAdmin"]</div>
+    }
+
+    @if (!Model.Any())
+    {
+        <p class="admin-vazio">Nenhum produto encontrado.</p>
+    }
+    else
+    {
+        <div class="tabela-admin-wrapper">
+            <table class="tabela-admin">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Categoria</th>
+                        <th>Preço</th>
+                        <th>Criado por</th>
+                        <th>Data</th>
+                        <th>Status</th>
+                        <th class="text-end">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var produto in Model)
+                    {
+                        <tr>
+                            <td class="td-produto">
+                                <img src="@ImagemDoProduto(produto.ImagemUrl)"
+                                     class="miniatura-admin" alt="@produto.Titulo">
+                                <span>@produto.Titulo</span>
+                            </td>
+                            <td>@produto.Categoria</td>
+                            <td>R$ @produto.Preco.ToString("N2")</td>
+                            <td>@(produto.CriadoPor ?? "—")</td>
+                            <td>@produto.DataCriacao.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @if (produto.Disponivel)
+                                {
+                                    <span class="badge-admin badge-ativo">Ativo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge-admin badge-oculto">Oculto</span>
+                                }
+                            </td>
+                            <td class="text-end acoes-admin">
+                                <a asp-controller="Admin" asp-action="Editar" asp-route-id="@produto.Id" class="btn-admin btn-editar-admin">
+                                    Editar
+                                </a>
+
+                                <form asp-controller="Admin" asp-action="AlternarDisponibilidade" asp-route-id="@produto.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn-admin btn-ocultar-admin">
+                                        @(produto.Disponivel ? "Ocultar" : "Reativar")
+                                    </button>
+                                </form>
+
+                                <form asp-controller="Admin" asp-action="Apagar" asp-route-id="@produto.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Tem certeza que deseja apagar o produto \'@produto.Titulo\'? Essa ação não pode ser desfeita.');">
+                                    <button type="submit" class="btn-admin btn-apagar-admin">
+                                        Apagar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+</div>

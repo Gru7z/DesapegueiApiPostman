@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>aspnet-Desapeguei-Api-2a17ff86-0e6f-544e-b9b7-8785ff66f66e</UserSecretsId>
+    <RootNamespace>Desapeguei.Api</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20260924234949_IniciaUsuarios.cs" />
+    <Compile Remove="Migrations\20260924234949_IniciaUsuarios.Designer.cs" />
+    <Compile Remove="Migrations\20260924235052_IniciaProdutos.cs" />
+    <Compile Remove="Migrations\20260924235052_IniciaProdutos.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5" />
+  </ItemGroup>
+
+</Project>

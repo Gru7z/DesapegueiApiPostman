@@ -1,0 +1,77 @@
+﻿@page
+@model Desapeguei.Web.Areas.Identity.Pages.Account.Manage.EmailModel
+
+@{
+    ViewData["Title"] = "E-mail";
+}
+
+<div class="email-container">
+
+    <div class="email-topo">
+        <h1>Minha conta</h1>
+        <p>Altere as configurações da sua conta</p>
+    </div>
+
+    <div class="email-conteudo">
+
+        <div class="perfil-menu">
+
+            <a asp-page="./Index" class="perfil-menu-link">
+                Perfil
+            </a>
+
+            <a asp-page="./Email" class="perfil-menu-link ativo">
+                E-mail
+            </a>
+
+            <a asp-page="./Senha" class="perfil-menu-link">
+                Senha
+            </a>
+
+            <a asp-page="./DadosPessoais" class="perfil-menu-link">
+                Dados pessoais
+            </a>
+
+        </div>
+
+        <div class="email-card">
+
+            <h2>Alterar e-mail</h2>
+
+            <p>Altere o e-mail da sua conta.</p>
+
+            <form method="post">
+
+                <div class="email-item">
+
+                    <label>E-mail atual</label>
+
+                    <div class="email-valor">
+                        @Model.Email
+                    </div>
+
+                </div>
+
+                <div class="email-item">
+
+                    <label>Novo e-mail</label>
+
+                    <input asp-for="Input.NewEmail"
+                           type="email"
+                           class="email-input"
+                           required
+                           title="Digite um e-mail válido, como exemplo@gmail.com" />
+
+                </div>
+
+                <button type="submit" class="btn-email">
+                    Salvar
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

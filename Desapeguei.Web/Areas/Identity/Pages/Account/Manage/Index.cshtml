@@ -1,0 +1,61 @@
+﻿@page
+@model Desapeguei.Web.Areas.Identity.Pages.Account.Manage.IndexModel
+
+@{
+    ViewData["Title"] = "Minha conta";
+}
+
+<div class="perfil-container">
+
+    <div class="perfil-topo">
+        <h1>Minha conta</h1>
+        <p>Altere as configurações da sua conta</p>
+    </div>
+
+    <div class="perfil-conteudo">
+
+        <div class="perfil-menu">
+            <a asp-page="./Index" class="perfil-menu-link ativo">Perfil</a>
+            <a asp-page="./Email" class="perfil-menu-link">E-mail</a>
+            <a asp-page="./Senha" class="perfil-menu-link">Senha</a>
+            <a asp-page="./DadosPessoais" class="perfil-menu-link">Dados pessoais</a>
+        </div>
+
+        <div class="perfil-card">
+
+            <div class="perfil-cabecalho">
+
+                <div class="perfil-foto">
+                    <img src="~/img/avatar.png" alt="Foto do perfil">
+                </div>
+
+                <div>
+                    <h2>Meu perfil</h2>
+                    <p>@Model.Email</p>
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="perfil-informacoes">
+
+                <h3>Informações da conta</h3>
+
+                <label>E-mail</label>
+
+                <div class="perfil-email">
+                    @Model.Email
+                </div>
+
+                <button type="button" class="btn-alterar-foto">
+                    Alterar foto
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
