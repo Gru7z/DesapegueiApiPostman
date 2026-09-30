@@ -5,6 +5,7 @@ namespace Desapeguei.Api.Models
     // pensados pra serem testados fácil no Postman.
     public class ProdutoInput
     {
+        public Guid Id { get; set; }
         public string Titulo { get; set; } = string.Empty;
         public string Descricao { get; set; } = string.Empty;
         public string Categoria { get; set; } = string.Empty;

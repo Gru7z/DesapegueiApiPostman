@@ -1,0 +1,7 @@
+# Use this workspace to collaborate
+workspace:
+  id: 50ddf860-48e7-4c9e-997e-28e42eb82d5b
+
+localResources:
+  specs:
+    - ../obj/Debug/net10.0/EndpointInfo/Desapeguei.Api.json

@@ -1,10 +1,10 @@
 using Desapeguei.Api.Models;
 using Desapeguei.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Desapeguei.Api.Controllers
 {
-    // API simples para testar no Postman: só JSON, sem autenticação e sem upload de mídia.
     [ApiController]
     [Route("api/produtos")]
     public class ProdutosController : ControllerBase
@@ -18,7 +18,7 @@ namespace Desapeguei.Api.Controllers
 
         // GET /api/produtos
         // GET /api/produtos?categoria=Moveis
-        // Só produtos disponíveis.
+        // PÚBLICO: só produtos disponíveis.
         [HttpGet]
         public async Task<ActionResult<List<Produto>>> GetAll([FromQuery] string? categoria)
         {
@@ -26,17 +26,9 @@ namespace Desapeguei.Api.Controllers
             return Ok(produtos);
         }
 
-        // GET /api/produtos/admin?busca=...
-        // Todos os produtos, inclusive os ocultos.
-        [HttpGet("admin")]
-        public async Task<ActionResult<List<Produto>>> GetAllAdmin([FromQuery] string? busca)
-        {
-            var produtos = await _service.GetAllAdminAsync(busca);
-            return Ok(produtos);
-        }
-
         // GET /api/produtos/{id}
-        [HttpGet("{id:guid}")]
+        // PÚBLICO
+        [HttpGet("{id}")]
         public async Task<ActionResult<Produto>> GetById(Guid id)
         {
             var produto = await _service.GetByIdAsync(id);
@@ -48,7 +40,8 @@ namespace Desapeguei.Api.Controllers
         }
 
         // POST /api/produtos
-        // Body raw/JSON — pensado pra testar fácil no Postman.
+        // PROTEGIDO: precisa de token
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Produto>> Create([FromBody] ProdutoInput input)
         {
@@ -64,8 +57,9 @@ namespace Desapeguei.Api.Controllers
         }
 
         // PUT /api/produtos/{id}
-        // Body raw/JSON.
-        [HttpPut("{id:guid}")]
+        // PROTEGIDO: precisa de token
+        [Authorize]
+        [HttpPut("{id}")]
         public async Task<ActionResult<Produto>> Update(Guid id, [FromBody] ProdutoInput input)
         {
             try
@@ -83,21 +77,10 @@ namespace Desapeguei.Api.Controllers
             }
         }
 
-        // PATCH /api/produtos/{id}/disponibilidade
-        // Oculta/reexibe o produto sem apagar.
-        [HttpPatch("{id:guid}/disponibilidade")]
-        public async Task<ActionResult<Produto>> AlternarDisponibilidade(Guid id)
-        {
-            var produto = await _service.AlternarDisponibilidadeAsync(id);
-
-            if (produto == null)
-                return NotFound(new { mensagem = $"Produto com Id '{id}' não foi encontrado." });
-
-            return Ok(produto);
-        }
-
         // DELETE /api/produtos/{id}
-        [HttpDelete("{id:guid}")]
+        // PROTEGIDO: precisa de token
+        [Authorize]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var removido = await _service.DeleteAsync(id);
