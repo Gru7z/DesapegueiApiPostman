@@ -13,7 +13,7 @@ namespace Desapeguei.Api.Repositories
             _context = context;
         }
 
-        // Uso público (Postman / site) — só produtos disponíveis
+        // Uso público: só produtos disponíveis (os vendidos ficam de fora)
         public async Task<List<Produto>> GetAllAsync(string? categoria)
         {
             var query = _context.Produtos
@@ -24,24 +24,6 @@ namespace Desapeguei.Api.Repositories
             {
                 query = query.Where(p =>
                     p.Categoria.ToLower() == categoria.ToLower());
-            }
-
-            return await query
-                .OrderByDescending(p => p.DataCriacao)
-                .ToListAsync();
-        }
-
-        // Uso do Admin — todos os produtos, inclusive os ocultos
-        public async Task<List<Produto>> GetAllAdminAsync(string? busca)
-        {
-            var query = _context.Produtos.AsQueryable();
-
-            if (!string.IsNullOrWhiteSpace(busca))
-            {
-                var termo = busca.ToLower();
-                query = query.Where(p =>
-                    p.Titulo.ToLower().Contains(termo) ||
-                    p.Categoria.ToLower().Contains(termo));
             }
 
             return await query
@@ -63,6 +45,19 @@ namespace Desapeguei.Api.Repositories
         public void Delete(Produto produto)
         {
             _context.Produtos.Remove(produto);
+        }
+
+        // Verdadeiro se o produto já tem uma venda (não pode editar nem apagar)
+        public async Task<bool> FoiVendidoAsync(Guid produtoId)
+        {
+            return await _context.Vendas.AnyAsync(v => v.ProdutoId == produtoId);
+        }
+
+        // Verdadeiro se o produto foi comprado por alguém que está desativado
+        public async Task<bool> CompradorDesativadoAsync(Guid produtoId)
+        {
+            return await _context.Vendas
+                .AnyAsync(v => v.ProdutoId == produtoId && !v.Comprador!.Ativo);
         }
 
         public async Task SaveChangesAsync()

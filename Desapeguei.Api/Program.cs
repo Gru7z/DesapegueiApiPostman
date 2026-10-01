@@ -26,6 +26,10 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<AuthService>();
 
+//------------ Vendas ----------
+builder.Services.AddScoped<VendaRepository>();
+builder.Services.AddScoped<VendaService>();
+
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -51,8 +55,8 @@ builder.Services
                 var idTexto = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 var db = context.HttpContext.RequestServices.GetRequiredService<ProdutoContext>();
 
-                if (!Guid.TryParse(idTexto, out var id) || !await db.Usuarios.AnyAsync(u => u.Id == id))
-                    context.Fail("Usuário não existe mais.");
+                if (!Guid.TryParse(idTexto, out var id) || !await db.Usuarios.AnyAsync(u => u.Id == id && u.Ativo))
+                    context.Fail("Usuário não existe ou está desativado.");
             }
         };
     });

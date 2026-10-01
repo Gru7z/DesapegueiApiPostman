@@ -56,6 +56,10 @@ namespace Desapeguei.Api.Services
             if (resultado == PasswordVerificationResult.Failed)
                 return null;
 
+            // NOVO: conta desativada não recebe token
+            if (!usuario.Ativo)
+                throw new UnauthorizedAccessException("Conta desativada.");
+
             return GerarToken(usuario);
         }
 
@@ -85,19 +89,36 @@ namespace Desapeguei.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<bool> DeleteAsync(Guid id, string? emailSolicitante)
+        // Alterna entre ativo e desativado (só o admin)
+        public async Task<Usuario?> AlternarAtivoAsync(Guid id, Guid idSolicitante, string? emailSolicitante)
         {
-            // Regra: só o admin apaga
-            if (emailSolicitante != _config["AdminEmail"])
+            if (!EhAdmin(emailSolicitante))
                 throw new UnauthorizedAccessException();
 
-            var usuario = await _repository.GetByIdAsync(id);
-            if (usuario == null) return false;
+            if (id == idSolicitante)
+                throw new ArgumentException("O admin não pode desativar a própria conta.");
 
-            _repository.Delete(usuario);
+            var usuario = await _repository.GetByIdAsync(id);
+            if (usuario == null) return null;
+
+            usuario.Ativo = !usuario.Ativo;
             await _repository.SaveChangesAsync();
 
-            return true;
+            return usuario;
+        }
+
+        // Lista todos, inclusive os desativados (só o admin)
+        public async Task<List<Usuario>> ListarAsync(string? emailSolicitante)
+        {
+            if (!EhAdmin(emailSolicitante))
+                throw new UnauthorizedAccessException();
+
+            return await _repository.GetAllAsync();
+        }
+
+        private bool EhAdmin(string? email)
+        {
+            return string.Equals(email, _config["AdminEmail"], StringComparison.OrdinalIgnoreCase);
         }
     }
 }
