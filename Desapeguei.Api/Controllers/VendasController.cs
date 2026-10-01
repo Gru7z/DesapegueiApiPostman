@@ -49,20 +49,12 @@ namespace Desapeguei.Api.Controllers
         }
 
         // GET /api/vendas   (só admin: todas as vendas e quem comprou)
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> ListarTodas()
         {
-            var emailLogado = User.FindFirstValue(ClaimTypes.Email);
-
-            try
-            {
-                var vendas = await _service.ListarTodasAsync(emailLogado);
-                return Ok(vendas.Select(ParaResposta));
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Forbid();
-            }
+            var vendas = await _service.ListarTodasAsync();
+            return Ok(vendas.Select(ParaResposta));
         }
 
         // Monta a resposta sem expor a senha do comprador

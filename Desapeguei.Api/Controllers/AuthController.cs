@@ -13,13 +13,11 @@ namespace Desapeguei.Api.Controllers
     {
         private readonly AuthService _service;
         private readonly UsuarioRepository _repository;
-        private readonly IConfiguration _config;
 
-        public AuthController(AuthService service, UsuarioRepository repository, IConfiguration config)
+        public AuthController(AuthService service, UsuarioRepository repository)
         {
             _service = service;
             _repository = repository;
-            _config = config;
         }
 
         // GET /api/auth/usuarios  (precisa do token)
@@ -79,54 +77,38 @@ namespace Desapeguei.Api.Controllers
 
             if (usuario == null) return NotFound();
 
-            return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Telefone });
+            return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Telefone, usuario.Admin });
         }
 
-        // GET /api/auth/usuarios  (só admin) - mostra também os desativados
-        [Authorize]
+        // GET /api/auth/desativados  (só admin) - mostra também os desativados
+        [Authorize(Roles = "Admin")]
         [HttpGet("desativados")]
         public async Task<IActionResult> Listar()
         {
-            var emailLogado = User.FindFirstValue(ClaimTypes.Email);
-
-            try
-            {
-                var usuarios = await _service.ListarAsync(emailLogado);
-                return Ok(usuarios.Select(u => new { u.Id, u.Nome, u.Email, u.Telefone, u.Ativo }));
-            }
-            catch (UnauthorizedAccessException)
-            {
-                return Forbid();
-            }
+            var usuarios = await _service.ListarAsync();
+            return Ok(usuarios.Select(u => new { u.Id, u.Nome, u.Email, u.Telefone, u.Ativo, u.Admin }));
         }
 
-        // PATCH /api/auth/usuarios/{id}/status  (só admin) - alterna ativo/desativado
-        [Authorize]
+        // PUT /api/auth/usuarios/{id}/status  (só admin) - alterna ativo/desativado
+        [Authorize(Roles = "Admin")]
         [HttpPut("usuarios/{id}/status")]
         public async Task<IActionResult> AlternarStatus(Guid id)
         {
             var idLogado = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var emailLogado = User.FindFirstValue(ClaimTypes.Email);
 
             try
             {
-                var usuario = await _service.AlternarAtivoAsync(id, idLogado, emailLogado);
+                var usuario = await _service.AlternarAtivoAsync(id, idLogado);
 
                 if (usuario == null)
                     return NotFound(new { mensagem = "Usuário não encontrado." });
 
                 return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Ativo });
             }
-            catch (UnauthorizedAccessException)
-            {
-                return Forbid();
-            }
             catch (ArgumentException ex)
             {
                 return BadRequest(new { mensagem = ex.Message });
             }
         }
-
-
     }
 }

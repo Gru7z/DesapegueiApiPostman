@@ -31,7 +31,8 @@ namespace Desapeguei.Api.Services
             {
                 Nome = input.Nome.Trim(),
                 Email = email,
-                Telefone = input.Telefone.Trim()
+                Telefone = input.Telefone.Trim(),
+                Admin = false // quem se registra pela API nunca é admin
             };
 
             usuario.Senha = _hasher.HashPassword(usuario, input.Senha);
@@ -56,7 +57,7 @@ namespace Desapeguei.Api.Services
             if (resultado == PasswordVerificationResult.Failed)
                 return null;
 
-            // NOVO: conta desativada não recebe token
+            // Conta desativada não recebe token
             if (!usuario.Ativo)
                 throw new UnauthorizedAccessException("Conta desativada.");
 
@@ -89,12 +90,9 @@ namespace Desapeguei.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // Alterna entre ativo e desativado (só o admin)
-        public async Task<Usuario?> AlternarAtivoAsync(Guid id, Guid idSolicitante, string? emailSolicitante)
+        // Alterna entre ativo e desativado (o controller já garante que é admin)
+        public async Task<Usuario?> AlternarAtivoAsync(Guid id, Guid idSolicitante)
         {
-            if (!EhAdmin(emailSolicitante))
-                throw new UnauthorizedAccessException();
-
             if (id == idSolicitante)
                 throw new ArgumentException("O admin não pode desativar a própria conta.");
 
@@ -107,18 +105,10 @@ namespace Desapeguei.Api.Services
             return usuario;
         }
 
-        // Lista todos, inclusive os desativados (só o admin)
-        public async Task<List<Usuario>> ListarAsync(string? emailSolicitante)
+        // Lista todos, inclusive os desativados
+        public async Task<List<Usuario>> ListarAsync()
         {
-            if (!EhAdmin(emailSolicitante))
-                throw new UnauthorizedAccessException();
-
             return await _repository.GetAllAsync();
-        }
-
-        private bool EhAdmin(string? email)
-        {
-            return string.Equals(email, _config["AdminEmail"], StringComparison.OrdinalIgnoreCase);
         }
     }
 }

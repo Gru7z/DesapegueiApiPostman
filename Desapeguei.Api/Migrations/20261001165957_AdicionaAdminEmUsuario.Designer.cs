@@ -4,6 +4,7 @@ using Desapeguei.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Desapeguei.Api.Migrations
 {
     [DbContext(typeof(ProdutoContext))]
-    partial class ProdutoContextModelSnapshot : ModelSnapshot
+    [Migration("20261001165957_AdicionaAdminEmUsuario")]
+    partial class AdicionaAdminEmUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

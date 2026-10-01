@@ -47,16 +47,36 @@ builder.Services
                 Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
         };
 
-        // Se o usuário for apagado do banco, o token dele deixa de valer
         options.Events = new JwtBearerEvents
         {
             OnTokenValidated = async context =>
             {
                 var idTexto = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (!Guid.TryParse(idTexto, out var id))
+                {
+                    context.Fail("Token inválido.");
+                    return;
+                }
+
                 var db = context.HttpContext.RequestServices.GetRequiredService<ProdutoContext>();
 
-                if (!Guid.TryParse(idTexto, out var id) || !await db.Usuarios.AnyAsync(u => u.Id == id && u.Ativo))
+                // Se o usuário foi apagado ou desativado, o token deixa de valer
+                var usuario = await db.Usuarios
+                    .AsNoTracking()
+                    .Where(u => u.Id == id && u.Ativo)
+                    .Select(u => new { u.Admin })
+                    .FirstOrDefaultAsync();
+
+                if (usuario == null)
+                {
                     context.Fail("Usuário não existe ou está desativado.");
+                    return;
+                }
+
+                // O papel vem SEMPRE do banco, não do token
+                if (usuario.Admin && context.Principal?.Identity is ClaimsIdentity identity)
+                    identity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
             }
         };
     });
@@ -67,6 +87,13 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// ---------- Cria o admin automaticamente (se ainda não existir) ----------
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ProdutoContext>();
+    await DbDefineAdmin.SeedAdminAsync(db);
+}
 
 if (app.Environment.IsDevelopment())
 {

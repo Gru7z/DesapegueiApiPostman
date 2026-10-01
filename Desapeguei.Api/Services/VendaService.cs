@@ -8,15 +8,12 @@ namespace Desapeguei.Api.Services
     {
         private readonly VendaRepository _vendaRepository;
         private readonly ProdutoRepository _produtoRepository;
-        private readonly IConfiguration _config;
 
         public VendaService(VendaRepository vendaRepository,
-                            ProdutoRepository produtoRepository,
-                            IConfiguration config)
+                            ProdutoRepository produtoRepository)
         {
             _vendaRepository = vendaRepository;
             _produtoRepository = produtoRepository;
-            _config = config;
         }
 
         // Devolve null se o produto não existe
@@ -56,12 +53,9 @@ namespace Desapeguei.Api.Services
             return await _vendaRepository.GetByCompradorAsync(compradorId);
         }
 
-        // Só o admin vê todas as vendas e quem comprou
-        public async Task<List<Venda>> ListarTodasAsync(string? emailSolicitante)
+        // Todas as vendas e quem comprou (o controller já garante que é admin)
+        public async Task<List<Venda>> ListarTodasAsync()
         {
-            if (!string.Equals(emailSolicitante, _config["AdminEmail"], StringComparison.OrdinalIgnoreCase))
-                throw new UnauthorizedAccessException();
-
             return await _vendaRepository.GetAllAsync();
         }
     }
