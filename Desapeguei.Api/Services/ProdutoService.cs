@@ -17,14 +17,16 @@ namespace Desapeguei.Api.Services
             return await _repository.GetAllAsync(categoria);
         }
 
-        public async Task<List<Produto>> GetAllAdminAsync(string? busca)
-        {
-            return await _repository.GetAllAdminAsync(busca);
-        }
-
         public async Task<Produto?> GetByIdAsync(Guid id)
         {
-            return await _repository.GetByIdAsync(id);
+            var produto = await _repository.GetByIdAsync(id);
+            if (produto == null) return null;
+
+            // Comprado por usuário desativado: fica oculto (volta quando ele for reativado)
+            if (await _repository.CompradorDesativadoAsync(id))
+                return null;
+
+            return produto;
         }
 
         public async Task<Produto> CreateAsync(ProdutoInput input)
@@ -52,6 +54,10 @@ namespace Desapeguei.Api.Services
             var produto = await _repository.GetByIdAsync(id);
             if (produto == null) return null;
 
+            // Regra: produto vendido não pode ser alterado
+            if (await _repository.FoiVendidoAsync(id))
+                throw new ArgumentException("Produto já vendido não pode ser alterado.");
+
             Validar(input);
 
             produto.Titulo = input.Titulo.Trim();
@@ -67,21 +73,14 @@ namespace Desapeguei.Api.Services
             return produto;
         }
 
-        public async Task<Produto?> AlternarDisponibilidadeAsync(Guid id)
-        {
-            var produto = await _repository.GetByIdAsync(id);
-            if (produto == null) return null;
-
-            produto.Disponivel = !produto.Disponivel;
-            await _repository.SaveChangesAsync();
-
-            return produto;
-        }
-
         public async Task<bool> DeleteAsync(Guid id)
         {
             var produto = await _repository.GetByIdAsync(id);
             if (produto == null) return false;
+
+            // Regra: produto vendido não pode ser apagado
+            if (await _repository.FoiVendidoAsync(id))
+                throw new ArgumentException("Produto já vendido não pode ser apagado.");
 
             _repository.Delete(produto);
             await _repository.SaveChangesAsync();

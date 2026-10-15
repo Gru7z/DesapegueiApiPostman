@@ -13,13 +13,6 @@ namespace Desapeguei.Api.Repositories
             _context = context;
         }
 
-        public async Task<List<Usuario>> GetAllAsync()
-        {
-            return await _context.Usuarios
-                .OrderBy(u => u.Nome)
-                .ToListAsync();
-        }
-
         public async Task<Usuario?> GetByEmailAsync(string email)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
@@ -30,6 +23,13 @@ namespace Desapeguei.Api.Repositories
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
         }
 
+        public async Task<List<Usuario>> GetAllAsync()
+        {
+            return await _context.Usuarios
+                .OrderBy(u => u.Nome)
+                .ToListAsync();
+        }
+
         public async Task AddAsync(Usuario usuario)
         {
             await _context.Usuarios.AddAsync(usuario);
@@ -38,11 +38,6 @@ namespace Desapeguei.Api.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
-        }
-
-        public void Delete(Usuario usuario)
-        {
-            _context.Usuarios.Remove(usuario);
         }
     }
 }

@@ -63,6 +63,14 @@ namespace Desapeguei.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<bool>("Admin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Ativo")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(true);
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(150)
@@ -88,6 +96,53 @@ namespace Desapeguei.Api.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Desapeguei.Api.Models.Venda", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CompradorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("DataVenda")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("ProdutoId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompradorId");
+
+                    b.HasIndex("ProdutoId")
+                        .IsUnique();
+
+                    b.ToTable("Vendas");
+                });
+
+            modelBuilder.Entity("Desapeguei.Api.Models.Venda", b =>
+                {
+                    b.HasOne("Desapeguei.Api.Models.Usuario", "Comprador")
+                        .WithMany()
+                        .HasForeignKey("CompradorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Desapeguei.Api.Models.Produto", "Produto")
+                        .WithMany()
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Comprador");
+
+                    b.Navigation("Produto");
                 });
 #pragma warning restore 612, 618
         }

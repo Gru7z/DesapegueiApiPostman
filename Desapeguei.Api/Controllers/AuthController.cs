@@ -13,13 +13,11 @@ namespace Desapeguei.Api.Controllers
     {
         private readonly AuthService _service;
         private readonly UsuarioRepository _repository;
-        private readonly IConfiguration _config;
 
-        public AuthController(AuthService service, UsuarioRepository repository, IConfiguration config)
+        public AuthController(AuthService service, UsuarioRepository repository)
         {
             _service = service;
             _repository = repository;
-            _config = config;
         }
 
         // GET /api/auth/usuarios  (precisa do token)
@@ -54,12 +52,19 @@ namespace Desapeguei.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginInput input)
         {
-            var token = await _service.LoginAsync(input);
+            try
+            {
+                var token = await _service.LoginAsync(input);
 
-            if (token == null)
-                return Unauthorized(new { mensagem = "Email ou senha inválidos." });
+                if (token == null)
+                    return Unauthorized(new { mensagem = "Email ou senha inválidos." });
 
-            return Ok(new { token });
+                return Ok(new { token });
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, new { mensagem = ex.Message });
+            }
         }
 
         // GET /api/auth/me  (precisa do token)
@@ -72,27 +77,37 @@ namespace Desapeguei.Api.Controllers
 
             if (usuario == null) return NotFound();
 
-            return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Telefone });
+            return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Telefone, usuario.Admin });
         }
 
-        // DELETE /api/auth/usuarios/{id}  (só o admin)
-        [Authorize]
-        [HttpDelete("usuarios/{id}")]
-        public async Task<IActionResult> Delete(Guid id)
+        // GET /api/auth/desativados  (só admin) - mostra também os desativados
+        [Authorize(Roles = "Admin")]
+        [HttpGet("desativados")]
+        public async Task<IActionResult> Listar()
         {
-            var emailLogado = User.FindFirstValue(ClaimTypes.Email);
+            var usuarios = await _service.ListarAsync();
+            return Ok(usuarios.Select(u => new { u.Id, u.Nome, u.Email, u.Telefone, u.Ativo, u.Admin }));
+        }
+
+        // PUT /api/auth/usuarios/{id}/status  (só admin) - alterna ativo/desativado
+        [Authorize(Roles = "Admin")]
+        [HttpPut("usuarios/{id}/status")]
+        public async Task<IActionResult> AlternarStatus(Guid id)
+        {
+            var idLogado = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
             try
             {
-                var removido = await _service.DeleteAsync(id, emailLogado);
+                var usuario = await _service.AlternarAtivoAsync(id, idLogado);
 
-                if (!removido) return NotFound();
+                if (usuario == null)
+                    return NotFound(new { mensagem = "Usuário não encontrado." });
 
-                return NoContent();
+                return Ok(new { usuario.Id, usuario.Nome, usuario.Email, usuario.Ativo });
             }
-            catch (UnauthorizedAccessException)
+            catch (ArgumentException ex)
             {
-                return Forbid();
+                return BadRequest(new { mensagem = ex.Message });
             }
         }
     }

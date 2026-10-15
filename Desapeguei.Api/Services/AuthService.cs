@@ -31,7 +31,8 @@ namespace Desapeguei.Api.Services
             {
                 Nome = input.Nome.Trim(),
                 Email = email,
-                Telefone = input.Telefone.Trim()
+                Telefone = input.Telefone.Trim(),
+                Admin = false // quem se registra pela API nunca é admin
             };
 
             usuario.Senha = _hasher.HashPassword(usuario, input.Senha);
@@ -55,6 +56,10 @@ namespace Desapeguei.Api.Services
 
             if (resultado == PasswordVerificationResult.Failed)
                 return null;
+
+            // Conta desativada não recebe token
+            if (!usuario.Ativo)
+                throw new UnauthorizedAccessException("Conta desativada.");
 
             return GerarToken(usuario);
         }
@@ -85,19 +90,25 @@ namespace Desapeguei.Api.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public async Task<bool> DeleteAsync(Guid id, string? emailSolicitante)
+        // Alterna entre ativo e desativado (o controller já garante que é admin)
+        public async Task<Usuario?> AlternarAtivoAsync(Guid id, Guid idSolicitante)
         {
-            // Regra: só o admin apaga
-            if (emailSolicitante != _config["AdminEmail"])
-                throw new UnauthorizedAccessException();
+            if (id == idSolicitante)
+                throw new ArgumentException("O admin não pode desativar a própria conta.");
 
             var usuario = await _repository.GetByIdAsync(id);
-            if (usuario == null) return false;
+            if (usuario == null) return null;
 
-            _repository.Delete(usuario);
+            usuario.Ativo = !usuario.Ativo;
             await _repository.SaveChangesAsync();
 
-            return true;
+            return usuario;
+        }
+
+        // Lista todos, inclusive os desativados
+        public async Task<List<Usuario>> ListarAsync()
+        {
+            return await _repository.GetAllAsync();
         }
     }
 }
