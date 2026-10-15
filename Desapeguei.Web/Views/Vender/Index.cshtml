@@ -1,3 +1,4 @@
+
 @{
     ViewData["Title"] = "Quero Vender";
 }
@@ -15,26 +16,50 @@
 
         <div class="row g-3">
 
-            <!-- ADICIONAR IMAGEM -->
+            <!-- IMAGEM -->
             <div class="col-6 col-md-3">
+
                 <label class="upload-box mb-0" for="inputImagem">
-                    <img src="~/img/barras.png" class="icone-upload" id="iconeImagem">
-                    <span id="textoImagem">Adicionar imagem</span>
+
+                    <img src="~/img/barras.png"
+                         class="icone-upload"
+                         id="iconeImagem">
+
+                    <span id="textoImagem">
+                        Adicionar imagem
+                    </span>
+
                 </label>
-                <input type="file" id="inputImagem" name="Imagem" accept="image/*" class="d-none">
+
+                <input type="file"
+                       id="inputImagem"
+                       name="Imagem"
+                       accept="image/*"
+                       class="d-none">
+
             </div>
 
-            <!-- ADICIONAR VIDEO (ilustrativo) -->
-            <!-- ADICIONAR VIDEO (ilustrativo) -->
-            <!-- ADICIONAR VIDEO -->
+            <!-- VÍDEO -->
             <div class="col-6 col-md-3">
-                <label class="upload-box mb-0" for="inputVideo">
 
+                <label class="upload-box mb-0"
+                       for="inputVideo"
+                       id="boxVideo">
+
+                    <!-- Ícone marrom -->
                     <img src="~/img/avatar.png"
                          class="icone-upload"
                          id="iconeVideo">
 
-                    <span id="textoVideo">Adicionar vídeo</span>
+                    <!-- Texto -->
+                    <span id="textoVideo">
+                        Adicionar vídeo
+                    </span>
+
+                    <!-- Vídeo (fica escondido até escolher um arquivo) -->
+                    <video id="previewVideo"
+                           controls>
+                    </video>
 
                 </label>
 
@@ -44,59 +69,122 @@
                        accept="video/*"
                        class="d-none">
 
-                <!-- Pré-visualização do vídeo -->
-                <video id="previewVideo"
-                       controls
-                       style="display:none; width:100%; margin-top:10px; border-radius:10px;">
-                </video>
             </div>
 
-            <!-- DESCRICAO -->
+
+            <!-- DESCRIÇÃO -->
             <div class="col-12 col-md-6">
+
                 <textarea class="form-control descricao-produto"
                           id="descricaoProduto"
                           name="Descricao"
                           placeholder="Escreva a descrição do seu produto aqui..."
                           required></textarea>
+
             </div>
 
         </div>
 
+
+        <!-- CATEGORIA E PREÇO -->
         <div class="row">
+
             <div class="col-12 col-md-6">
-                <!-- CATEGORIAS -->
+
                 <div class="categoria-box">
-                    <strong class="d-block mb-2">Selecionar categoria</strong>
+
+                    <strong class="d-block mb-2">
+                        Selecionar categoria
+                    </strong>
 
                     <div class="form-check">
-                        <input class="form-check-input categoria-radio" type="radio" name="Categoria" value="Roupas" id="catRoupas">
-                        <label class="form-check-label" for="catRoupas">Roupas</label>
+                        <input class="form-check-input categoria-radio"
+                               type="radio"
+                               name="Categoria"
+                               value="Roupas"
+                               id="catRoupas">
+
+                        <label class="form-check-label"
+                               for="catRoupas">
+                            Roupas
+                        </label>
                     </div>
+
                     <div class="form-check">
-                        <input class="form-check-input categoria-radio" type="radio" name="Categoria" value="Calçados" id="catCalcados">
-                        <label class="form-check-label" for="catCalcados">Calçados</label>
+                        <input class="form-check-input categoria-radio"
+                               type="radio"
+                               name="Categoria"
+                               value="Calçados"
+                               id="catCalcados">
+
+                        <label class="form-check-label"
+                               for="catCalcados">
+                            Calçados
+                        </label>
                     </div>
+
                     <div class="form-check">
-                        <input class="form-check-input categoria-radio" type="radio" name="Categoria" value="Brinquedos" id="catBrinquedos">
-                        <label class="form-check-label" for="catBrinquedos">Brinquedos</label>
+                        <input class="form-check-input categoria-radio"
+                               type="radio"
+                               name="Categoria"
+                               value="Brinquedos"
+                               id="catBrinquedos">
+
+                        <label class="form-check-label"
+                               for="catBrinquedos">
+                            Brinquedos
+                        </label>
                     </div>
+
                     <div class="form-check">
-                        <input class="form-check-input categoria-radio" type="radio" name="Categoria" value="Acessórios" id="catAcessorios">
-                        <label class="form-check-label" for="catAcessorios">Acessórios</label>
+                        <input class="form-check-input categoria-radio"
+                               type="radio"
+                               name="Categoria"
+                               value="Acessórios"
+                               id="catAcessorios">
+
+                        <label class="form-check-label"
+                               for="catAcessorios">
+                            Acessórios
+                        </label>
                     </div>
+
                     <div class="form-check">
-                        <input class="form-check-input categoria-radio" type="radio" name="Categoria" value="Móveis" id="catMoveis">
-                        <label class="form-check-label" for="catMoveis">Móveis</label>
+                        <input class="form-check-input categoria-radio"
+                               type="radio"
+                               name="Categoria"
+                               value="Móveis"
+                               id="catMoveis">
+
+                        <label class="form-check-label"
+                               for="catMoveis">
+                            Móveis
+                        </label>
                     </div>
+
                     <div class="form-check">
-                        <input class="form-check-input categoria-radio" type="radio" name="Categoria" value="Outros" id="catOutros">
-                        <label class="form-check-label" for="catOutros">Outros</label>
+                        <input class="form-check-input categoria-radio"
+                               type="radio"
+                               name="Categoria"
+                               value="Outros"
+                               id="catOutros">
+
+                        <label class="form-check-label"
+                               for="catOutros">
+                            Outros
+                        </label>
                     </div>
+
                 </div>
+
             </div>
 
+
+            <!-- PREÇO -->
             <div class="col-12 col-md-6">
+
                 <div class="preco-publicar">
+
                     <input type="text"
                            class="form-control input-preco"
                            id="precoProduto"
@@ -104,18 +192,32 @@
                            placeholder="R$ 00,00"
                            required>
 
-                    <button type="submit" class="btn-publicar">PUBLICAR</button>
+                    <button type="submit"
+                            class="btn-publicar">
+                        PUBLICAR
+                    </button>
+
                 </div>
+
             </div>
 
         </div>
 
     </form>
 
-    <div class="mensagem-vender" id="mensagemVender"></div>
+
+    <div class="mensagem-vender"
+         id="mensagemVender">
+    </div>
 
 </div>
 
+
 @section Scripts {
-    <script src="~/js/vender.js" asp-append-version="true"></script>
+
+    <script src="~/js/vender.js"
+            asp-append-version="true">
+    </script>
+
 }
+

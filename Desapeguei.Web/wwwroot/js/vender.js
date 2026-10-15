@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!arquivo) return;
 
-        // Verifica se é vídeo
         if (!arquivo.type.startsWith("video/")) {
 
             alert("Selecione um arquivo de vídeo.");
@@ -78,14 +77,13 @@ document.addEventListener("DOMContentLoaded", function () {
         // Cria URL temporária
         const url = URL.createObjectURL(arquivo);
 
-        // Coloca o vídeo no elemento <video>
+        // Coloca o vídeo no elemento
         previewVideo.src = url;
 
         // Mostra o vídeo
         previewVideo.style.display = "block";
 
-        // Altera o texto
-        // Esconde o texto do nome do arquivo
+        // Esconde o texto
         textoVideo.style.display = "none";
 
         // Esconde o ícone
@@ -141,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const precoNumerico = precoProduto.value
             .replace("R$", "")
             .replace(/\./g, "")
+            .replace(",", ".")
             .trim();
 
 
@@ -251,6 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (textoVideo) {
                     textoVideo.textContent = "Adicionar vídeo";
+                    textoVideo.style.display = "block";
                 }
 
 

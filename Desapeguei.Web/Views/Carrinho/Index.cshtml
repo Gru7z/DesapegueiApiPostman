@@ -5,32 +5,100 @@
 
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
+
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0" />
 
     <title>@ViewData["Title"]</title>
 
-    <link rel="stylesheet" href="~/css/carrinho.css" />
+    <link rel="stylesheet"
+          href="~/css/carrinho.css"
+          asp-append-version="true" />
+
 </head>
+
 
 <body>
 
-    <div class="carrinho-container">
 
-        <h2 class="titulo-carrinho">Meu Carrinho</h2>
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="header-desapeguei">
+
+
+        <!-- LOGO -->
+
+        <img src="~/img/logo.jpg"
+             class="logo-desapeguei"
+             alt="Desapeguei" />
+
+
+        <!-- NOME DO SITE -->
+
+        <h1>
+            DESAPEGUEI
+        </h1>
+
+
+        <!-- BOTÃO HOME -->
+
+        <a href="/Home/Index"
+           class="btn-home">
+
+            <img src="~/img/casa.png"
+                 alt="Página inicial" />
+
+        </a>
+
+
+    </header>
+
+
+
+    <!-- =====================================================
+         CARRINHO
+         ===================================================== -->
+
+    <main class="carrinho-container">
+
+
+        <!-- TÍTULO -->
+
+        <h2 class="titulo-carrinho">
+            Meu Carrinho
+        </h2>
+
+
+
+        <!-- =================================================
+             LISTA DE PRODUTOS
+             ================================================= -->
 
         <div id="listaCarrinho">
 
-            <div class="produto-carrinho">
+
+            <!-- PRODUTO 1 -->
+
+            <div class="produto-carrinho"
+                 data-preco="18.90">
+
 
                 <img src="~/img/produto1.jpg"
                      class="imagem-produto"
-                     alt="Produto">
+                     alt="Pulseira" />
+
 
                 <div class="info-produto">
 
-                    <h4>Pulseira</h4>
+                    <h4>
+                        Pulseira
+                    </h4>
 
                     <p class="categoria-produto">
                         Acessórios
@@ -40,43 +108,39 @@
                         R$ 18,90
                     </p>
 
-                    <div class="quantidade">
-
-                        <button type="button"
-                                class="btn-quantidade"
-                                onclick="alterarQuantidade(this, -1)">
-                            −
-                        </button>
-
-                        <span class="quantidade-valor">1</span>
-
-                        <button type="button"
-                                class="btn-quantidade"
-                                onclick="alterarQuantidade(this, 1)">
-                            +
-                        </button>
-
-                    </div>
-
                 </div>
+
 
                 <button type="button"
                         class="btn-remover"
-                        onclick="removerProduto(this)">
+                        onclick="removerProduto(this)"
+                        aria-label="Remover produto">
+
                     🗑
+
                 </button>
+
 
             </div>
 
-            <div class="produto-carrinho">
 
-                <img src="~/img/produto2.jpg"
+
+            <!-- PRODUTO 2 -->
+
+            <div class="produto-carrinho"
+                 data-preco="120.00">
+
+
+                <img src="~/img/produto3.jpg"
                      class="imagem-produto"
-                     alt="Produto">
+                     alt="Tênis Adidas" />
+
 
                 <div class="info-produto">
 
-                    <h4>Tênis Adidas</h4>
+                    <h4>
+                        Tênis Adidas
+                    </h4>
 
                     <p class="categoria-produto">
                         Calçados
@@ -86,68 +150,255 @@
                         R$ 120,00
                     </p>
 
-                    <div class="quantidade">
-
-                        <button type="button"
-                                class="btn-quantidade"
-                                onclick="alterarQuantidade(this, -1)">
-                            −
-                        </button>
-
-                        <span class="quantidade-valor">1</span>
-
-                        <button type="button"
-                                class="btn-quantidade"
-                                onclick="alterarQuantidade(this, 1)">
-                            +
-                        </button>
-
-                    </div>
-
                 </div>
+
 
                 <button type="button"
                         class="btn-remover"
-                        onclick="removerProduto(this)">
+                        onclick="removerProduto(this)"
+                        aria-label="Remover produto">
+
                     🗑
+
                 </button>
 
+
             </div>
+
 
         </div>
 
+
+
+        <!-- =================================================
+             RESUMO DA COMPRA
+             ================================================= -->
+
         <div class="resumo-carrinho">
 
-            <h3>Resumo da compra</h3>
+
+            <h3>
+                Resumo da compra
+            </h3>
+
+
+
+            <!-- SUBTOTAL -->
 
             <div class="linha-resumo">
-                <span>Subtotal</span>
-                <strong id="subtotal">R$ 138,90</strong>
+
+                <span>
+                    Subtotal
+                </span>
+
+                <strong id="subtotal">
+                    R$ 138,90
+                </strong>
+
             </div>
+
+
+
+            <!-- FRETE -->
 
             <div class="linha-resumo">
-                <span>Frete</span>
-                <strong>Grátis</strong>
+
+                <span>
+                    Frete
+                </span>
+
+                <strong>
+                    Grátis
+                </strong>
+
             </div>
 
-            <hr>
+
+
+            <hr />
+
+
+
+            <!-- TOTAL -->
 
             <div class="linha-total">
-                <span>Total</span>
-                <strong id="total">R$ 138,90</strong>
+
+                <span>
+                    Total
+                </span>
+
+                <strong id="total">
+                    R$ 138,90
+                </strong>
+
             </div>
+
+
+
+            <!-- BOTÃO PAGAMENTO -->
 
             <button type="button"
                     class="btn-finalizar"
                     onclick="irParaPagamento()">
+
                 Continuar para pagamento
+
             </button>
+
 
         </div>
 
-    </div>
 
-    <script src="~/js/carrinho.js"></script>
+    </main>
+
+
+
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
+
+    <footer class="footer-desapeguei">
+
+
+        <!-- CONTEÚDO DO FOOTER -->
+
+        <div class="footer-container">
+
+
+            <!-- ================= COLUNA 1 ================= -->
+
+            <div class="footer-coluna">
+
+                <h3>
+                    DESAPEGUEI
+                </h3>
+
+                <p>
+                    Encontre, venda e desapegue.
+                </p>
+
+            </div>
+
+
+
+            <!-- ================= COLUNA 2 ================= -->
+
+            <div class="footer-coluna">
+
+                <h3>
+                    SHOP
+                </h3>
+
+                <a href="#">
+                    Roupas
+                </a>
+
+                <a href="#">
+                    Calçados
+                </a>
+
+                <a href="#">
+                    Brinquedos
+                </a>
+
+                <a href="#">
+                    Móveis
+                </a>
+
+                <a href="#">
+                    Acessórios
+                </a>
+
+            </div>
+
+
+
+            <!-- ================= COLUNA 3 ================= -->
+
+            <div class="footer-coluna">
+
+                <h3>
+                    AJUDA
+                </h3>
+
+                <a href="#">
+                    Contato
+                </a>
+
+                <a href="#">
+                    Perguntas frequentes
+                </a>
+
+                <a href="#">
+                    Como vender
+                </a>
+
+                <a href="#">
+                    Como comprar
+                </a>
+
+            </div>
+
+
+
+            <!-- ================= COLUNA 4 ================= -->
+
+            <div class="footer-coluna">
+
+                <h3>
+                    SOBRE
+                </h3>
+
+                <a href="#">
+                    Quem somos
+                </a>
+
+                <a href="#">
+                    Nossa história
+                </a>
+
+                <a href="#">
+                    Termos de Serviço
+                </a>
+
+                <a href="#">
+                    Privacidade
+                </a>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- LINHA DO FOOTER -->
+
+        <div class="footer-linha"></div>
+
+
+
+        <!-- COPYRIGHT -->
+
+        <div class="footer-copy">
+
+            © 2026 Desapeguei. Todos os direitos reservados.
+
+        </div>
+
+
+    </footer>
+
+
+
+    <!-- =====================================================
+         JAVASCRIPT
+         ===================================================== -->
+
+    <script src="~/js/carrinho.js"
+            asp-append-version="true"></script>
+
 
 </body>
+
 </html>
