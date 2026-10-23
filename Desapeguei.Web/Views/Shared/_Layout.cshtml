@@ -24,7 +24,13 @@
     <link rel="stylesheet"
           href="~/css/home.css"
           asp-append-version="true" />
+
+    <link rel="stylesheet"
+          href="~/css/vender.css"
+          asp-append-version="true" />
 </head>
+
+
 
 <body class="@(paginaCheckout ? "corpo-checkout" : "")">
 
@@ -148,6 +154,9 @@
                 else
                 {
                     <div class="d-flex gap-3">
+                        <a asp-controller="Home" asp-action="Index" class="icone-checkout-link">
+                            <img src="~/img/casa.png" class="icone-checkout" alt="Página inicial">
+                        </a>
                         <a asp-controller="Pagamento" asp-action="Index" class="icone-checkout-link">
                             <img src="~/img/carrinho.png" class="icone-checkout">
                         </a>
@@ -252,3 +261,5 @@
     
 </body>
 </html>
+
+
