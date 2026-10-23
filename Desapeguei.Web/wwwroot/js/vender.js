@@ -217,13 +217,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         try {
 
-            const resposta = await fetch(
-                `${API_BASE}/api/produtos/upload`,
-                {
-                    method: "POST",
-                    body: dadosFormulario
-                }
+            const tokenAntiforgery = form.querySelector(
+                'input[name="__RequestVerificationToken"]'
+            ).value;
+
+            dadosFormulario.append(
+                "__RequestVerificationToken",
+                tokenAntiforgery
             );
+
+            const resposta = await fetch("/Vender/Publicar", {
+                method: "POST",
+                body: dadosFormulario
+            });
 
 
             // =============================================

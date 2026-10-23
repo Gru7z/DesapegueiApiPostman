@@ -108,15 +108,32 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("WebPolicy", policy =>
+    {
+        policy.WithOrigins("https://localhost:7276")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+
+app.UseStaticFiles();
+
 app.UseRouting();
-app.UseCors("Site");
+
+app.UseCors("WebPolicy");
+
 app.UseAuthentication();
+
 app.UseAuthorization();
 
-// Cria o administrador da API, se necessário
+app.MapControllers();
+
+app.Run();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider

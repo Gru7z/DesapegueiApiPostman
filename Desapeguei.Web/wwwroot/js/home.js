@@ -1,69 +1,26 @@
-document.addEventListener("DOMContentLoaded", function () {
 
-    const produtosPadrao = [
-        {
-            nome: "Pulseira",
-            preco: 18.90,
-            categoria: "Acessórios",
-            imagem: "/img/produto1.jpg",
-            descricao: "Pulseira artesanal feita com miçangas coloridas."
-        },
-        {
-            nome: "Boneca",
-            preco: 25.00,
-            categoria: "Brinquedos",
-            imagem: "/img/produto2.jpg",
-            descricao: "Boneca divertida, perfeita para crianças."
-        },
-        {
-            nome: "Tênis da Adidas",
-            preco: 120.00,
-            categoria: "Calçados",
-            imagem: "/img/produto3.jpg",
-            descricao: "Tênis esportivo da Adidas, confortável e estiloso."
-        },
-        {
-            nome: "Camiseta Oversized",
-            preco: 45.00,
-            categoria: "Roupas",
-            imagem: "/img/produto4.jpg",
-            descricao: "Camiseta oversized, ideal para um look casual e moderno."
-        },
-        {
-            nome: "Mesa Gamer",
-            preco: 350.00,
-            categoria: "Móveis",
-            imagem: "/img/produto5.jpg",
-            descricao: "Mesa gamer com design ergonômico e espaço para acessórios."
-        },
-        {
-            nome: "Calça cargo",
-            preco: 350.00,
-            categoria: "Roupas",
-            imagem: "/img/produto6.jpg",
-            descricao: "Calça cargo, perfeita para um estilo urbano e confortável."
-        },
-    ];
+document.addEventListener("DOMContentLoaded", function () {
 
     const produtosContainer = document.getElementById("produtosContainer");
 
-    // Página não é o marketplace (ex: Vender, Pagamento) -> não há nada a listar aqui.
+    // Se não estiver na página do marketplace, não executa.
     if (!produtosContainer) return;
 
     const categoriaFiltro = (produtosContainer.dataset.categoria || "").trim();
     const inputPesquisa = document.querySelector(".barra-pesquisa input");
 
-    let todosProdutos = [...produtosPadrao];
+    let todosProdutos = [];
     let produtosExibidos = [];
 
+    // ---------- EXIBE OS PRODUTOS ----------
     function mostrarProdutos(lista) {
 
         produtosExibidos = lista;
         produtosContainer.innerHTML = "";
 
-
         if (lista.length === 0) {
-            produtosContainer.innerHTML = `<p class="text-center text-white">Nenhum produto encontrado.</p>`;
+            produtosContainer.innerHTML =
+                `<p class="text-center text-white">Nenhum produto encontrado.</p>`;
             return;
         }
 
@@ -72,34 +29,72 @@ document.addEventListener("DOMContentLoaded", function () {
             produtosContainer.innerHTML += `
                 <div class="col-6 col-md-4 col-lg-3">
 
-                   <div class="card card-produto h-100 shadow"
-                    style="cursor: pointer;"
-                    data-produto-index="${index}">
+                    <div class="card card-produto h-100 shadow"
+                         style="cursor: pointer;"
+                         data-produto-index="${index}">
 
-                        <img src="${produto.imagem}" class="card-img-top">
+                        <img
+                            src="${produto.imagem}"
+                            alt="${produto.nome}"
+                            class="card-img-top"
+                            style="width: 100%; height: 220px; object-fit: contain;"
+                            onerror="this.closest('.col-6').remove()">
 
                         <div class="card-body text-center">
-
                             <h5>${produto.nome}</h5>
 
-                            <p>R$ ${Number(produto.preco).toFixed(2).replace(".", ",")}</p>
+                            <p>
+                                R$ ${Number(produto.preco)
+                    .toFixed(2)
+                    .replace(".", ",")}
+                            </p>
 
-                            
-                            <button type="button" class="btn btn-success btn-detalhes">
+                            <button type="button"
+                                    class="btn btn-success btn-detalhes">
                                 Ver detalhes
                             </button>
-
                         </div>
 
                     </div>
-
                 </div>
             `;
         });
+
+        <div class="col-6 col-md-4 col-lg-3">
+            <div class="card card-produto h-100"
+                data-produto-index="${index}">
+
+                <img
+                    src="${produto.imagem}"
+                    alt="${produto.nome}"
+                    class="card-img-top"
+                    onerror="this.closest('.col-6, .col-md-4, .col-lg-3').remove()">
+
+                    <div class="card-body text-center">
+                        <h5>${produto.nome}</h5>
+
+                        <p>
+                            R$ ${Number(produto.preco)
+                                .toFixed(2)
+                                .replace(".", ",")}
+                        </p>
+
+                        <button type="button"
+                            class="btn btn-success btn-detalhes">
+                            Ver detalhes
+                        </button>
+                    </div>
+            </div>
+        </div>
+
     }
 
+    // ---------- FILTROS ----------
     function aplicarFiltros() {
-        const texto = inputPesquisa ? inputPesquisa.value.toLowerCase() : "";
+
+        const texto = inputPesquisa
+            ? inputPesquisa.value.toLowerCase().trim()
+            : "";
 
         let filtrados = todosProdutos;
 
@@ -119,40 +114,62 @@ document.addEventListener("DOMContentLoaded", function () {
         mostrarProdutos(filtrados);
     }
 
-    // ---------- BUSCA OS PRODUTOS REAIS CADASTRADOS PELOS USUÁRIOS (API) ----------
+    // ---------- CARREGA PRODUTOS DA API ----------
     async function carregarProdutosDaApi() {
+
         try {
             const resposta = await fetch(`${API_BASE}/api/produtos`);
-            if (!resposta.ok) return;
+
+            if (!resposta.ok) {
+                throw new Error(`Erro HTTP: ${resposta.status}`);
+            }
 
             const produtosApi = await resposta.json();
 
-            const produtosConvertidos = produtosApi.map(p => ({
-                nome: p.titulo,
-                preco: p.preco,
-                categoria: p.categoria,
-                imagem: p.imagemUrl ? `${API_BASE}${p.imagemUrl}` : "/img/produto1.jpg",
-                descricao: p.descricao
-            }));
+            const produtosConvertidos = produtosApi
+                .filter(p =>
+                    typeof p.imagemUrl === "string" &&
+                    p.imagemUrl.trim() !== ""
+                )
+                .map(p => {
 
-            todosProdutos = [...produtosConvertidos, ...produtosPadrao];
+                    let imagem = p.imagemUrl.trim();
+
+                    // Mantém URLs completas e completa caminhos relativos.
+                    if (!/^https?:\/\//i.test(imagem)) {
+                        imagem = `${API_BASE}/${imagem.replace(/^\/+/, "")}`;
+                    }
+
+                    return {
+                        id: p.id,
+                        nome: p.titulo || "Produto sem nome",
+                        preco: p.preco,
+                        categoria: p.categoria || "",
+                        imagem: imagem,
+                        descricao: p.descricao || ""
+                    };
+                });
+
+            // Somente produtos reais da API, sem duplicar demonstrações.
+            todosProdutos = produtosConvertidos;
+
             aplicarFiltros();
+
         } catch (erro) {
-            // Sem conexão com a API: mantém apenas os produtos de exemplo.
-            console.warn("Não foi possível carregar os produtos cadastrados pelos usuários.", erro);
+
+            console.error("Erro ao carregar produtos da API:", erro);
+
+            todosProdutos = [];
+            aplicarFiltros();
         }
     }
 
-    mostrarProdutos(todosProdutos.filter(p =>
-        !categoriaFiltro || p.categoria.toLowerCase() === categoriaFiltro.toLowerCase()
-    ));
-   
+    // ---------- PESQUISA ----------
     if (inputPesquisa) {
-        inputPesquisa.addEventListener("keyup", aplicarFiltros);
+        inputPesquisa.addEventListener("input", aplicarFiltros);
     }
 
-   
-    // Abre os detalhes quando clicar em um produto
+    // ---------- DETALHES DO PRODUTO ----------
     produtosContainer.addEventListener("click", function (evento) {
 
         const card = evento.target.closest(".card-produto");
@@ -202,35 +219,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 max-height: 90vh;
                 overflow-y: auto;
             ">
-                <button type="button" id="fecharDetalhes"
-                    style="position:absolute; right:12px; top:8px;
-                    border:0; background:none; font-size:26px; cursor:pointer;">
+
+                <button type="button"
+                        id="fecharDetalhes"
+                        style="
+                            position: absolute;
+                            right: 12px;
+                            top: 8px;
+                            border: 0;
+                            background: none;
+                            font-size: 26px;
+                            cursor: pointer;
+                        ">
                     &times;
                 </button>
 
-                <img src="${produto.imagem}" alt="${produto.nome}"
-                    style="width:100%; max-width:280px; object-fit:contain;">
+                <img
+                    src="${produto.imagem}"
+                    alt="${produto.nome}"
+                    style="width: 100%; max-width: 280px; object-fit: contain;">
 
-                <div style="flex:1; min-width:200px; padding-top:20px;">
+                <div style="flex: 1; min-width: 200px; padding-top: 20px;">
+
                     <h2>${produto.nome}</h2>
 
-                    <h3 style="color:#a85f2d;">
-                        R$ ${Number(produto.preco).toFixed(2).replace(".", ",")}
+                    <h3 style="color: #a85f2d;">
+                        R$ ${Number(produto.preco)
+                .toFixed(2)
+                .replace(".", ",")}
                     </h3>
 
                     <p>${produto.descricao || "Sem descrição disponível."}</p>
 
                     <p>⭐⭐⭐⭐⭐ 5,0 (avaliação demonstrativa)</p>
 
-                    
-                   <button type="button" id="comprarAgora" class="btn btn-success">
-                    Comprar agora
-                   </button>
+                    <button type="button"
+                            id="comprarAgora"
+                            class="btn btn-success">
+                        Comprar agora
+                    </button>
 
-<button type="button" id="adicionarAoCarrinho"
-    class="btn btn-outline-success">
-    Adicionar ao carrinho
-</button>
+                    <button type="button"
+                            id="adicionarAoCarrinho"
+                            class="btn btn-outline-success">
+                        Adicionar ao carrinho
+                    </button>
 
                 </div>
             </div>
@@ -238,9 +271,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.body.appendChild(modal);
 
-        document.getElementById("fecharDetalhes").addEventListener("click", function () {
-            modal.remove();
-        });
+        document.getElementById("fecharDetalhes")
+            .addEventListener("click", function () {
+                modal.remove();
+            });
 
         modal.addEventListener("click", function (eventoModal) {
             if (eventoModal.target === modal) {
@@ -248,35 +282,38 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-
-        document.getElementById("comprarAgora").addEventListener("click", function () {
-            window.location.href = "/Pagamento/Index";
-        });
-
-        document.getElementById("adicionarAoCarrinho").addEventListener("click", function () {
-
-            let carrinho = JSON.parse(localStorage.getItem("carrinhoDesapeguei")) || [];
-
-            carrinho.push({
-                nome: produto.nome,
-                preco: produto.preco,
-                imagem: produto.imagem,
-                descricao: produto.descricao,
-                quantidade: 1
+        document.getElementById("comprarAgora")
+            .addEventListener("click", function () {
+                window.location.href = "/Pagamento/Index";
             });
 
-            localStorage.setItem("carrinhoDesapeguei", JSON.stringify(carrinho));
+        document.getElementById("adicionarAoCarrinho")
+            .addEventListener("click", function () {
 
-            alert("Produto adicionado ao carrinho!");
-        });
+                let carrinho = JSON.parse(
+                    localStorage.getItem("carrinhoDesapeguei")
+                ) || [];
 
+                carrinho.push({
+                    id: produto.id,
+                    nome: produto.nome,
+                    preco: produto.preco,
+                    imagem: produto.imagem,
+                    descricao: produto.descricao,
+                    quantidade: 1
+                });
 
+                localStorage.setItem(
+                    "carrinhoDesapeguei",
+                    JSON.stringify(carrinho)
+                );
+
+                alert("Produto adicionado ao carrinho!");
+            });
     });
 
-
-    // ORIGINAL: continua carregando os produtos da API
+    // Inicia o carregamento.
     carregarProdutosDaApi();
-
 });
 
 function comprarProduto(index) {

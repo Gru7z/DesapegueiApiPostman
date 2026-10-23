@@ -64,5 +64,22 @@ namespace Desapeguei.Api.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        public async Task<List<Produto>> GetAllAdminAsync(string? busca)
+        {
+            var query = _context.Produtos.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(busca))
+            {
+                var texto = busca.Trim().ToLower();
+
+                query = query.Where(p =>
+                    p.Titulo.ToLower().Contains(texto) ||
+                    p.Categoria.ToLower().Contains(texto));
+            }
+
+            return await query
+                .OrderByDescending(p => p.DataCriacao)
+                .ToListAsync();
+        }
     }
 }

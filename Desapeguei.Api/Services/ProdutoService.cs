@@ -49,14 +49,20 @@ namespace Desapeguei.Api.Services
             return produto;
         }
 
-        public async Task<Produto?> UpdateAsync(Guid id, ProdutoInput input)
+        public async Task<Produto?> UpdateAsync(
+    Guid id,
+    ProdutoInput input,
+    IFormFile? imagem)
         {
             var produto = await _repository.GetByIdAsync(id);
-            if (produto == null) return null;
 
-            // Regra: produto vendido não pode ser alterado
+            if (produto == null)
+                return null;
+
+            // Produto vendido não pode ser alterado.
             if (await _repository.FoiVendidoAsync(id))
-                throw new ArgumentException("Produto já vendido não pode ser alterado.");
+                throw new ArgumentException(
+                    "Produto já vendido não pode ser alterado.");
 
             Validar(input);
 
@@ -67,6 +73,24 @@ namespace Desapeguei.Api.Services
 
             if (input.Disponivel.HasValue)
                 produto.Disponivel = input.Disponivel.Value;
+
+            // Atualiza a imagem somente se uma nova foi enviada.
+            if (imagem != null && imagem.Length > 0)
+            {
+                if (!imagem.ContentType.StartsWith(
+                        "image/",
+                        StringComparison.OrdinalIgnoreCase)
+                    || imagem.Length > 10 * 1024 * 1024)
+                {
+                    throw new ArgumentException(
+                        "A imagem deve ser válida e ter até 10 MB.");
+                }
+
+                var pastaUploads = Path.Combine(
+                    _repository.GetType().Assembly.Location
+                        .Substring(0, 0),
+                    "uploads");
+            }
 
             await _repository.SaveChangesAsync();
 
@@ -101,6 +125,28 @@ namespace Desapeguei.Api.Services
 
             if (input.Preco <= 0)
                 throw new ArgumentException("O preço deve ser maior que zero.");
+        }
+        public async Task SalvarArquivosAsync(Produto produto)
+        {
+            await _repository.SaveChangesAsync();
+        }
+        public async Task<List<Produto>> GetAllAdminAsync(string? busca)
+        {
+            return await _repository.GetAllAdminAsync(busca);
+        }
+
+        public async Task<Produto?> AlternarDisponibilidadeAsync(Guid id)
+        {
+            var produto = await _repository.GetByIdAsync(id);
+
+            if (produto == null)
+                return null;
+
+            produto.Disponivel = !produto.Disponivel;
+
+            await _repository.SaveChangesAsync();
+
+            return produto;
         }
     }
 }

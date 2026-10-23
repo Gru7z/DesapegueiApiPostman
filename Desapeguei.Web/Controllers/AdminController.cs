@@ -63,16 +63,24 @@ namespace Desapeguei.Web.Controllers
                 return View(produtoEditado);
             }
 
-            var atualizado = await _api.AtualizarAsync(id, produtoEditado, novaImagem);
+            var resultado = await _api.AtualizarAsync(
+    id,
+    produtoEditado,
+    novaImagem);
 
-            if (atualizado == null)
+            if (!resultado.Sucesso)
             {
-                ModelState.AddModelError(string.Empty, "Não foi possível atualizar o produto na API.");
+                ModelState.AddModelError(
+                    string.Empty,
+                    $"Não foi possível atualizar o produto: {resultado.Erro}");
+
                 ViewData["TituloSite"] = "EDITAR PRODUTO";
                 return View(produtoEditado);
             }
 
-            TempData["MensagemAdmin"] = $"Produto \"{atualizado.Titulo}\" atualizado com sucesso.";
+            TempData["MensagemAdmin"] =
+                $"Produto \"{resultado.Produto?.Titulo ?? produtoEditado.Titulo}\" atualizado com sucesso.";
+
             return RedirectToAction(nameof(Index));
         }
 
