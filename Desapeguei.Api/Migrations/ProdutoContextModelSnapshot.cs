@@ -28,6 +28,9 @@ namespace Desapeguei.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CaminhoVideo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Categoria")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -44,6 +47,9 @@ namespace Desapeguei.Api.Migrations
                     b.Property<bool>("Disponivel")
                         .HasColumnType("bit");
 
+                    b.Property<string>("ImagemUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Preco")
                         .HasColumnType("decimal(18,2)");
 
@@ -51,6 +57,9 @@ namespace Desapeguei.Api.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<Guid?>("VendedorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

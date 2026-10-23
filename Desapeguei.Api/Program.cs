@@ -1,3 +1,4 @@
+
 using System.Security.Claims;
 using System.Text;
 using Desapeguei.Api.Data;
@@ -9,49 +10,55 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ---------- Banco ----------
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+// Banco de dados
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException(
+        "Connection string 'DefaultConnection' não encontrada.");
 
 builder.Services.AddDbContext<ProdutoContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// ---------- Produtos ----------
+// Produtos
 builder.Services.AddScoped<ProdutoRepository>();
 builder.Services.AddScoped<ProdutoService>();
 
-// ---------- Usuários / JWT ----------
+// Usuários e autenticação
 builder.Services.AddScoped<UsuarioRepository>();
 builder.Services.AddScoped<AuthService>();
 
-//------------ Vendas ----------
+// Vendas
 builder.Services.AddScoped<VendaRepository>();
 builder.Services.AddScoped<VendaService>();
 
+// JWT
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidateAudience = true,
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            ClockSkew = TimeSpan.Zero, // expira no minuto exato
-            ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-        };
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ClockSkew = TimeSpan.Zero,
+                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                ValidAudience = builder.Configuration["Jwt:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(
+                    Encoding.UTF8.GetBytes(
+                        builder.Configuration["Jwt:Key"]!))
+            };
 
         options.Events = new JwtBearerEvents
         {
             OnTokenValidated = async context =>
             {
-                var idTexto = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var idTexto = context.Principal?
+                    .FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
                 if (!Guid.TryParse(idTexto, out var id))
                 {
@@ -59,9 +66,9 @@ builder.Services
                     return;
                 }
 
-                var db = context.HttpContext.RequestServices.GetRequiredService<ProdutoContext>();
+                var db = context.HttpContext.RequestServices
+                    .GetRequiredService<ProdutoContext>();
 
-                // Se o usuário foi apagado ou desativado, o token deixa de valer
                 var usuario = await db.Usuarios
                     .AsNoTracking()
                     .Where(u => u.Id == id && u.Ativo)
@@ -70,28 +77,51 @@ builder.Services
 
                 if (usuario == null)
                 {
-                    context.Fail("Usuário não existe ou está desativado.");
+                    context.Fail(
+                        "Usuário não existe ou está desativado.");
                     return;
                 }
 
-                // O papel vem SEMPRE do banco, não do token
-                if (usuario.Admin && context.Principal?.Identity is ClaimsIdentity identity)
-                    identity.AddClaim(new Claim(ClaimTypes.Role, "Admin"));
+                if (usuario.Admin &&
+                    context.Principal?.Identity is ClaimsIdentity identity)
+                {
+                    identity.AddClaim(
+                        new Claim(ClaimTypes.Role, "Admin"));
+                }
             }
         };
     });
 
 builder.Services.AddAuthorization();
-
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+// CORS para o site local
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("Site", policy =>
+    {
+        policy
+            .WithOrigins("https://localhost:7276")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
-// ---------- Cria o admin automaticamente (se ainda não existir) ----------
+app.UseHttpsRedirection();
+app.UseRouting();
+app.UseCors("Site");
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Cria o administrador da API, se necessário
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<ProdutoContext>();
+    var db = scope.ServiceProvider
+        .GetRequiredService<ProdutoContext>();
+
     await DbDefineAdmin.SeedAdminAsync(db);
 }
 
@@ -100,13 +130,6 @@ if (app.Environment.IsDevelopment())
     app.UseMigrationsEndPoint();
     app.MapOpenApi();
 }
-
-app.UseHttpsRedirection();
-
-app.UseRouting();
-
-app.UseAuthentication();   // primeiro: "quem é você?"
-app.UseAuthorization();    // depois: "você pode entrar?"
 
 app.MapControllers();
 

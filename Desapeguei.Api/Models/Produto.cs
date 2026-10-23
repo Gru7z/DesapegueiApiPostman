@@ -26,5 +26,11 @@ namespace Desapeguei.Api.Models
         public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
 
         public bool Disponivel { get; set; } = true;
+
+        public string? CaminhoVideo { get; set; }
+
+        public string? ImagemUrl { get; set; }
+
+        public Guid? VendedorId { get; set; }
     }
 }
